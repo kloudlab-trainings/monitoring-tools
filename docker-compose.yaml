@@ -1,0 +1,42 @@
+version: '3'
+services:
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./prometheus:/etc/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - "9090:9090"
+  alertmanager:
+    image: prom/alertmanager
+    volumes:
+      - ./alertmanager/alertmanager.yml:/etc/alertmanager.yml
+    command:
+      - '--config.file=/etc/alertmanager.yml'
+    ports:
+      - 9093:9093
+    # extra_hosts:
+    #   - "host.docker.internal:host-gateway"
+  
+  collectd:
+    image: mwaeckerlin/collectd
+    volumes:
+      - ./collectd:/etc/collectd
+    network_mode: host
+
+  collectd_exporter:
+    image: prom/collectd-exporter
+    ports:
+      - "9103:9103"
+    command:
+      - "--collectd.listen-address=:25826"  # Make sure this port matches the Collectd configuration
+      - "--web.listen-address=:9103"
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
+      - ./grafana_data:/var/lib/grafana

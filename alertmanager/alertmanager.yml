@@ -1,0 +1,27 @@
+global:
+  resolve_timeout: 5m
+
+receivers:
+- name: 'email-notifications'
+  email_configs:
+  - to: 'trainer@kloudlab.com'
+    from: 'alertmanager+training@kloudlab.com'
+    smarthost: 'sandbox.smtp.mailtrap.io:587'
+    auth_username: ''
+    auth_password: ''
+    send_resolved: true
+
+# - name: slack-notfi
+#   slack_configs:
+#     - channel: 
+#       api_key:
+
+route:
+  # A default receiver
+  receiver: email-notifications
+
+    # routes:
+    #reciever: slack-notif
+    #matches:
+    #  owner: jackly
+    #  city: china
